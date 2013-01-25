@@ -1,0 +1,17 @@
+<h1>New download</h1>
+
+<form action = "{% url 'downloader:submit_new_download' %}" method = "post">
+	{% csrf_token %}
+
+	<input type = "text" name = "download_url"><br />
+
+	<input type = "radio" name = "download_type" id = "download_type_simple_url" 
+		value = "simple_url_download" checked />
+	<label for = "download_type_simple_url">Simple url</label><br/>
+
+	<input type = "radio" name = "download_type" id = "download_type_torrent" 
+		value = "torrent_download" />
+	<label for = "download_type_torrent">Torrent download</label><br/>
+
+	<input type = "submit" value = "Submit download">
+</form>
