@@ -1,0 +1,11 @@
+<h1>Downloads list</h1>
+
+{% if latest_downloads_list %}
+    <ul>
+    {% for download in latest_downloads_list %}
+        <li>{{ download.name }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>There are no downloads.</p>
+{% endif %}

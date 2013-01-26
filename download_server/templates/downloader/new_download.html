@@ -1,5 +1,7 @@
 <h1>New download</h1>
 
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
 <form action = "{% url 'downloader:submit_new_download' %}" method = "post">
 	{% csrf_token %}
 
