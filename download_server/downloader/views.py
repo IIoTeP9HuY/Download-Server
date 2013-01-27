@@ -21,7 +21,6 @@ def submit_new_download(request):
 		return render(request, 'downloader/new_download.html', {
 			'error_message': "You didn't select a download type.",
 		})
-	print >> sys.stderr, download_type
 
 	if download_type == "simple_url_download":
 		download = SimpleUrlDownload.create(download_url)

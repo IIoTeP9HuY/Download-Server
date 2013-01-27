@@ -6,11 +6,17 @@ Replace this with more appropriate tests for your application.
 """
 
 from django.test import TestCase
+from models import SimpleUrlDownload
 
-
-class SimpleTest(TestCase):
-	def test_basic_addition(self):
+class SimpleUrlDownloadTest(TestCase):
+	
+	def test_local_file_download(self):
 		"""
-		Tests that 1 + 1 always equals 2.
+		Tests local file download.
 		"""
-		self.assertEqual(1 + 1, 2)
+		download = SimpleUrlDownload.create("http://localhost")
+		download.save()
+		download.start()
+		self.assertEqual(download.file_size, download.downloaded_file_size)
+		self.assertEqual(download.name, 'localhost')
+		self.assertEqual(download.state, 'Finished')

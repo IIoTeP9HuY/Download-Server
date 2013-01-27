@@ -5,15 +5,16 @@
 <form action = "{% url 'downloader:submit_new_download' %}" method = "post">
 	{% csrf_token %}
 
-	<input type = "text" name = "download_url"><br />
+	Download url: <input type = "text" name = "download_url"><br /><br />
 
+	Choose download type:<br />
 	<input type = "radio" name = "download_type" id = "download_type_simple_url" 
 		value = "simple_url_download" checked />
 	<label for = "download_type_simple_url">Simple url</label><br/>
 
 	<input type = "radio" name = "download_type" id = "download_type_torrent" 
 		value = "torrent_download" />
-	<label for = "download_type_torrent">Torrent download</label><br/>
+	<label for = "download_type_torrent">Torrent</label><br /><br />
 
 	<input type = "submit" value = "Submit download">
 </form>

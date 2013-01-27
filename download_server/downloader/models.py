@@ -7,18 +7,30 @@ import sys
 
 class Download(models.Model):
 
-	name = models.CharField(max_length = 200)
-	url = models.CharField(max_length = 200)
+	name = models.CharField(max_length = 255)
+	file_name = models.CharField(max_length = 255)
+	url = models.CharField(max_length = 255)
+	state = models.CharField(max_length = 20)
+	file_size = models.IntegerField()
+	downloaded_file_size = models.IntegerField()
 
 	class Meta:
 		abstract = True
-
 
 	@classmethod
 	def create(Class, url):
 		download = Class()
 		download.url = url
 		download.name = url.split("/")[-1]
+		download.file_name = "/tmp/" + download.name
+		download.state = "Not started"
+		download.downloaded_file_size = 0
+		u = urllib2.urlopen(download.url)
+		meta = u.info()
+		download.file_size = int(meta.getheaders("Content-Length")[0])
+		if download.file_size == 0:
+			raise Exception("File size is zero")
+
 		return download
 
 	def type(self):
@@ -39,36 +51,35 @@ class Download(models.Model):
 	def resume(self):
 		pass
 
+	def progress(self):
+		pass
+
 class SimpleUrlDownload(Download):
-	
+
+	read_block_size = 8196
+
 	def type(self):
 		return "Simple Url Download"
 
+	def progress(self):
+		return int(float(self.downloaded_file_size) / self.file_size) * 100
+
 	def start(self):
-		file_name = "/tmp/" + self.name
+		f = open(self.file_name, 'wb')
 		u = urllib2.urlopen(self.url)
-		f = open(file_name, 'wb')
-		meta = u.info()
-		file_size = int(meta.getheaders("Content-Length")[0])
-		print >> sys.stderr, "Downloading: {0} Bytes: {1}".format(self.url, file_size)
 
-		downloaded_file_size = 0
-		read_block_size = 8196
-
-		#while buffer = u.read(block_size):
+		self.state = "Started"
 		while True:
-			buffer = u.read(read_block_size)
+			buffer = u.read(self.read_block_size)
 			if not buffer:
 				break
 
-			downloaded_file_size += len(buffer)
+			self.downloaded_file_size += len(buffer)
 			f.write(buffer)
-			download_progress = float(downloaded_file_size) / file_size
-			status = r"{0}  [{1:.2%}]".format(downloaded_file_size, download_progress)
-			status = status + chr(8)*(len(status) + 1)
-			print >> sys.stderr, status
+			self.save()
 
-		print >> sys.stderr, "Download finished"
+		self.state = "Finished"
+		self.save()
 
 class TorrentDownload(Download):
 

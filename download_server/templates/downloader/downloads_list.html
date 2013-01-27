@@ -1,11 +1,48 @@
 <h1>Downloads list</h1>
 
+<style>
+
+  h1 {
+    border-bottom: 1px solid #c0c0c0;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    white-space: nowrap;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  tr.header {
+    font-weight: bold;
+  }
+
+  td.detailsColumn {
+    padding-left: 2em;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+</style>
+
+
 {% if latest_downloads_list %}
-    <ul>
-    {% for download in latest_downloads_list %}
-        <li>{{ download.name }}</li>
-    {% endfor %}
-    </ul>
+	<table id="table">
+		<tr class=header>
+			<td>Name</td>
+			<td class="detailsColumn">State</td>
+			<td class="detailsColumn">Progress</td>
+			<td class="detailsColumn">Size</td>
+		</tr>
+		{% for download in latest_downloads_list %}
+		<tr>
+			<td>{{ download.name }}</td>
+			<td class="detailsColumn">{{ download.state }}</td>
+			<td class="detailsColumn">{{ download.progress }}</td>
+			<td class="detailsColumn">{{ download.file_size }}</td>
+		</tr>
+		{% endfor %}
+	</table>
 {% else %}
-    <p>There are no downloads.</p>
+	<p>There are no downloads.</p>
 {% endif %}
